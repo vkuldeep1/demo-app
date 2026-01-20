@@ -2,7 +2,7 @@ name: Build and Deploy to EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   id-token: write
@@ -28,14 +28,13 @@ jobs:
 
       - name: Build, tag, and push image
         env:
-        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPOSITORY: demo-app
-        IMAGE_TAG: latest
-       run: |
-         docker build -t $REPOSITORY:$IMAGE_TAG .
-         docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
-         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: demo-app
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $REPOSITORY:$IMAGE_TAG .
+          docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1
@@ -45,10 +44,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-            | docker login --username AWS --password-stdin \
-              ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+              | docker login --username AWS --password-stdin \
+                ${{ steps.login-ecr.outputs.registry }}
 
-            docker pull \
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO }}:latest
-
+            docker pull ${{ steps.login-ecr.outputs.registry }}/demo-app:latest
             ./run.sh
+
