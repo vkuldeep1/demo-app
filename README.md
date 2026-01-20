@@ -1,34 +1,25 @@
-Below is a **single, complete, intern-friendly but technically correct README** that you can **paste directly into `README.md`**.
-
-It documents **everything that happened**, **why it happened**, **every error**, **how it was debugged**, and **what concepts were learned** — in the **exact order** you experienced them.
-
-This is intentionally **long**. That is the point.
-
----
-
 # 🚀 End-to-End Cloud Deployment Project
 
 **Python App → Docker → AWS EC2 → ECR → IAM → VPC → GitHub Actions CI/CD**
 
 ---
 
-## 1. Project Purpose (Why This Exists)
+## 1. Project Purpose
 
-This project was built to **understand cloud deployment properly**, not to “just deploy something”.
+This project was built to **understand cloud deployment properly**.
 
 The goals were:
 
-* Understand **how an application reaches users** on AWS
-* Learn **what each AWS service actually does**
-* Stop relying on assumptions and tutorials
-* Learn **real debugging**, not trial-and-error
+* A small Python web application (simple HTTP service)
+* Containerized with **Docker**
+* Source code in **Github*
+* CI/CD using **GitHub Actions**
+* Image stored in **Amazon ECR**
+* App runs on **Amazon EC2**
+* Network isolated using **Amazon VPC**
+* Secrets handled via **AWS Secrets Manager** and **AWS Systems Manager Parameter Store**
+* DNS via **Amazon Route 53**
 * Build a **solid foundation** before scaling or using managed services
-
-This project intentionally:
-
-* Avoids ECS, Kubernetes, Terraform (for now)
-* Uses **manual setup first**, then automation
-* Exposes **real-world errors** instead of hiding them
 
 ---
 
@@ -149,13 +140,6 @@ Docker provides:
 * Dependency isolation
 * Consistent behavior across machines
 
-Docker **does NOT**:
-
-* Open network ports
-* Configure AWS networking
-* Manage IAM
-* Deploy applications
-
 ### Key Docker Concepts Learned
 
 * Image ≠ Container
@@ -211,10 +195,6 @@ Only after this worked did we move to AWS.
 * Not a runtime
 * Not a deployment system
 * Not a server
-
-### Important Learning
-
-> An image in ECR does nothing until a compute service pulls and runs it.
 
 ---
 
@@ -478,19 +458,6 @@ At the end of this project:
 * SSH success proves nothing about app ports
 * Public IP ≠ reachable service
 * Automation without understanding is dangerous
-
----
-
-## 20. What Comes Next (Future Work)
-
-Possible extensions:
-
-* Load Balancer + horizontal scaling
-* HTTPS with ACM
-* Route 53 real domain
-* Blue/Green deployments
-* Cost optimization
-* Infrastructure as Code (Terraform)
 
 ---
 
