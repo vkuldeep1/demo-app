@@ -23,21 +23,19 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker image
+       - name: Build, tag, and push image
+         env:
+         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+         REPOSITORY: demo-app
+         IMAGE_TAG: latest
         run: |
-          docker build -t ${{ secrets.ECR_REPO }}:latest .
+          docker build -t $REPOSITORY:$IMAGE_TAG .
+          docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      - name: Tag Docker image
-        run: |
-          docker tag ${{ secrets.ECR_REPO }}:latest \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO }}:latest
-
-      - name: Push image to ECR
-        run: |
-          docker push \
-          ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPO }}:latest
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1
